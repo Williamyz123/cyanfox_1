@@ -1,6 +1,7 @@
 <template>
   <div>
     <basic-search></basic-search>
+    <DocItem></DocItem>
   </div>
 </template>
 
@@ -9,10 +10,11 @@ import axios from 'axios'
 import taskPane from './js/taskpane.js'
 import basicSearch from "@/components/BasicSearch.vue";
 import BasicSearch from "@/components/BasicSearch.vue";
+import DocItem from "@/components/DocItem.vue";
 
 export default {
   name: 'TaskPane',
-  components: {BasicSearch},
+  components: {DocItem, BasicSearch},
   data() {
     return {
       DemoSpan: '',
