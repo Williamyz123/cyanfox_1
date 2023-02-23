@@ -65,17 +65,21 @@ export default {
     // 这个应该是隔0.5s就监听鼠标
     testWpsApi() {
       this.level1 = ""
-      alert("函数之前level1为" + this.level1)
+      // alert("函数之前level1为" + this.level1)
       this.level2 = ""
       this.level3 = ""
       this.selectionChange()
-      alert("函数之后level1为" + this.level1)
+      // alert("函数之后level1为" + this.level1)
       // alert(this.level1)
       this.keywords = `${this.level1} ${this.level2} ${this.level3}`
       // this.keywords = "ffvgxcbfbnsddb"
     },
     activeWorker() {
+      this.level1 = ""
+      this.level2 = ""
+      this.level3 = ""
       this.selectionChange()
+      this.keywords = `${this.level1} ${this.level2} ${this.level3}`
       setTimeout(() => {
         this.activeWorker()
       }, 500)
@@ -129,7 +133,7 @@ export default {
     },
   },
   mounted() {
-    // this.activeWorker()
+    this.activeWorker()
   }
 }
 </script>
