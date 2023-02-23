@@ -48,7 +48,7 @@ export default {
 .process-select {
   color: white;
   padding: 7px 7px;
-  background-color: #1ca7de;
+  background-color: #005c30;
 }
 .keyword-input {
   padding-right: 10px;
@@ -80,7 +80,7 @@ export default {
   color: white;
   border: solid 1px;
   border-radius: 0 4px 4px 0;
-  background-color: #1ca7de;
+  background-color: #005c30;
 }
 #search-range-select {
   height: 100%;

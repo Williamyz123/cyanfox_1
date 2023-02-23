@@ -10,6 +10,8 @@
     </el-select>
     <basic-search></basic-search>
     <DocItem></DocItem>
+    <DocItem></DocItem>
+
   </div>
 </template>
 
@@ -64,7 +66,7 @@ export default {
 <style scoped>
 .el-dropdown-link {
   cursor: pointer;
-  color: #1ca7de;
+  color: #005c30;
 }
 .el-icon-arrow-down {
   font-size: 12px;
