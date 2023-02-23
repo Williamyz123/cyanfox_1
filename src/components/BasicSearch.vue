@@ -40,7 +40,8 @@
 
 <script>
 export default {
-  name: "BasicSearch"
+  name: "BasicSearch",
+  props:['keywords']
 }
 </script>
 

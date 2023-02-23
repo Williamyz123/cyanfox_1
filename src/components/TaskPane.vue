@@ -1,5 +1,6 @@
 <template>
   <div>
+    <button @click='testWpsApi'>测试</button>
     <el-select v-model="value" placeholder="请选择">
       <el-option
           v-for="item in options"
@@ -8,7 +9,7 @@
           :value="item.value">
       </el-option>
     </el-select>
-    <basic-search></basic-search>
+    <basic-search :keywords="keywords"></basic-search>
     <DocItem></DocItem>
     <DocItem></DocItem>
 
@@ -44,9 +45,10 @@ export default {
         label: '文化历史'
       }],
       value: '',
-      level1: '',
-      level2: '',
-      level3: '',
+      level1: "",
+      level2: "",
+      level3: "",
+      keywords:'',
 
     }
   },
@@ -61,45 +63,58 @@ export default {
     //     taskPane.onbuttonclick('openWeb', this.DemoSpan)
     // }
     // 这个应该是隔0.5s就监听鼠标
+    testWpsApi() {
+      this.level1 = ""
+      alert("函数之前level1为" + this.level1)
+      this.level2 = ""
+      this.level3 = ""
+      this.selectionChange()
+      alert("函数之后level1为" + this.level1)
+      // alert(this.level1)
+      this.keywords = `${this.level1} ${this.level2} ${this.level3}`
+      // this.keywords = "ffvgxcbfbnsddb"
+    },
     activeWorker() {
       this.selectionChange()
       setTimeout(() => {
         this.activeWorker()
-        console.log("以下打印三个level")
-        console.log(this.level1, this.level2, this.level3)
       }, 500)
     },
+    // 用于监测鼠标选取内容的变化
     selectionChange() {
       let res = wps.WpsApplication().Selection
       let selectText = res.Text;
-      if (selectText.length > 1) {
+      // alert("选中的文本为" + res.Text)
+      if (selectText.length > 200) {
         this.selectText = selectText.slice(0, 200)
       } else {
+        // 若不是主推送文档，则不需要进行按章节推送
         var level1 = "";
         var level2 = "";
         var level3 = "";
         this.level2 = level2;
         this.level3 = level3;
         this.getHeadingDone = false;
-        let paragraph = res.Paragraphs.First;
+        let para_first = res.Paragraphs.First;
+        let paragraph = res.Paragraphs.Last;
         // var always = 10
         while (!this.getHeadingDone) {
           if (paragraph.Style.NameLocal.indexOf("标题") !== -1) {
             if (paragraph.Style.NameLocal.indexOf("标题 3") !== -1) {
-              if (level3 === "") {
+              if (level3 == "") {
                 level3 = paragraph.Range.Text;
                 this.level3 = level3;
               }
-            } else if (paragraph.Style.NameLocal.indexOf("标题 2") !== -1) {
-              if (level2 === "") {
+            } else if (paragraph.Style.NameLocal.indexOf("标题 2") != -1) {
+              if (level2 == "") {
                 level2 = paragraph.Range.Text;
                 this.level2 = level2;
-                if (level3 === "") {
+                if (level3 == "") {
                   level3 = "placeholder";
                 }
               }
-            } else if (paragraph.Style.NameLocal.indexOf("标题 1") !== -1) {
-              if (level1 === "") {
+            } else if (paragraph.Style.NameLocal.indexOf("标题 1") != -1) {
+              if (level1 == "") {
                 level1 = paragraph.Range.Text;
                 this.level1 = level1;
                 this.getHeadingDone = true;
@@ -110,10 +125,11 @@ export default {
           // always--"selectionchange"
         }
       }
+      // alert("走出了循环")
     },
   },
   mounted() {
-    this.activeWorker()
+    // this.activeWorker()
   }
 }
 </script>
