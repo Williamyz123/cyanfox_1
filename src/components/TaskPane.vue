@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button @click='testWpsApi'>测试</button>
+    <!--<button @click='testWpsApi'>测试</button>-->
     <el-select v-model="value" placeholder="请选择">
       <el-option
           v-for="item in options"
@@ -87,10 +87,9 @@ export default {
       this.level3.forEach(value => {
         this.keywords += value;
       })
-      // this.keywords = `${this.level1} ${this.level2} ${this.level3}`
-      // setTimeout(() => {
-      //   this.activeWorker()
-      // }, 500)
+      setTimeout(() => {
+        this.activeWorker()
+      }, 500)
     },
     // 用于监测鼠标选取内容的变化
     selectionChange() {
@@ -101,8 +100,6 @@ export default {
       let res = wps.WpsApplication().Selection
       let selectText = res.Text;
       // 它这个如果不框选一个范围，那么selectText就是空
-      // alert("selectText: " + selectText);
-      // alert("res: " + res);
       if (selectText.length > 200) {
         this.selectText = selectText.slice(0, 200)
       } else {
@@ -110,13 +107,11 @@ export default {
         let level1 = '';
         let level2 = '';
         let level3 = '';
-        // this.level2 = level2;
-        // this.level3 = level3;
+
         this.getHeadingDone = false;
         let para_first = res.Paragraphs.First;
         let para_last = res.Paragraphs.Last;
-        // alert("para_first" + para_first.Range.Text)
-        // alert("para_last" + para_last.Range.Text)
+
         let test = res.Range.Paragraphs.Count;
         // var always = 10
         // while (!this.getHeadingDone) {
