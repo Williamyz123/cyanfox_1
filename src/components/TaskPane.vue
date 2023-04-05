@@ -22,6 +22,7 @@ import taskPane from './js/taskpane.js'
 import basicSearch from "@/components/BasicSearch.vue";
 import BasicSearch from "@/components/BasicSearch.vue";
 import DocItem from "@/components/DocItem.vue";
+import {forEach} from "core-js/stable/dom-collections";
 
 export default {
   name: 'TaskPane',
@@ -34,21 +35,12 @@ export default {
       }, {
         value: '选项2',
         label: '思政'
-      }, {
-        value: '选项3',
-        label: '英语学习'
-      }, {
-        value: '选项4',
-        label: '艺术哲学'
-      }, {
-        value: '选项5',
-        label: '文化历史'
       }],
       value: '',
-      level1: "",
-      level2: "",
-      level3: "",
-      keywords:'',
+      level1: [],
+      level2: [],
+      level3: [],
+      keywords: '',
 
     }
   },
@@ -64,72 +56,88 @@ export default {
     // }
     // 这个应该是隔0.5s就监听鼠标
     testWpsApi() {
-      this.level1 = ""
-      // alert("函数之前level1为" + this.level1)
-      this.level2 = ""
-      this.level3 = ""
+      console.log(111)
+      // this.level1 = ""
+      // this.level2 = ""
+      // this.level3 = ""
       this.selectionChange()
-      // alert("函数之后level1为" + this.level1)
-      // alert(this.level1)
-      this.keywords = `${this.level1} ${this.level2} ${this.level3}`
-      // this.keywords = "ffvgxcbfbnsddb"
+      this.level1.forEach(value => {
+        this.keywords += value;
+      })
+      this.level2.forEach(value => {
+        this.keywords += value;
+      })
+      this.level3.forEach(value => {
+        this.keywords += value;
+      })
+      // this.keywords = `${this.level1} ${this.level2} ${this.level3}`
     },
     activeWorker() {
-      this.level1 = ""
-      this.level2 = ""
-      this.level3 = ""
+      this.level1 = [];
+      this.level2 = [];
+      this.level3 = [];
+      this.keywords = '';
       this.selectionChange()
-      this.keywords = `${this.level1} ${this.level2} ${this.level3}`
-      setTimeout(() => {
-        this.activeWorker()
-      }, 500)
+      this.level1.forEach(value => {
+        this.keywords += value;
+      })
+      this.level2.forEach(value => {
+        this.keywords += value;
+      })
+      this.level3.forEach(value => {
+        this.keywords += value;
+      })
+      // this.keywords = `${this.level1} ${this.level2} ${this.level3}`
+      // setTimeout(() => {
+      //   this.activeWorker()
+      // }, 500)
     },
     // 用于监测鼠标选取内容的变化
     selectionChange() {
+      this.level1 = [];
+      this.level2 = [];
+      this.level3 = [];
+      this.keywords = '';
       let res = wps.WpsApplication().Selection
       let selectText = res.Text;
-      // alert("选中的文本为" + res.Text)
+      // 它这个如果不框选一个范围，那么selectText就是空
+      // alert("selectText: " + selectText);
+      // alert("res: " + res);
       if (selectText.length > 200) {
         this.selectText = selectText.slice(0, 200)
       } else {
         // 若不是主推送文档，则不需要进行按章节推送
-        var level1 = "";
-        var level2 = "";
-        var level3 = "";
-        this.level2 = level2;
-        this.level3 = level3;
+        let level1 = '';
+        let level2 = '';
+        let level3 = '';
+        // this.level2 = level2;
+        // this.level3 = level3;
         this.getHeadingDone = false;
         let para_first = res.Paragraphs.First;
-        let paragraph = res.Paragraphs.Last;
+        let para_last = res.Paragraphs.Last;
+        // alert("para_first" + para_first.Range.Text)
+        // alert("para_last" + para_last.Range.Text)
+        let test = res.Range.Paragraphs.Count;
         // var always = 10
-        while (!this.getHeadingDone) {
-          if (paragraph.Style.NameLocal.indexOf("标题") !== -1) {
-            if (paragraph.Style.NameLocal.indexOf("标题 3") !== -1) {
-              if (level3 == "") {
-                level3 = paragraph.Range.Text;
-                this.level3 = level3;
-              }
-            } else if (paragraph.Style.NameLocal.indexOf("标题 2") != -1) {
-              if (level2 == "") {
-                level2 = paragraph.Range.Text;
-                this.level2 = level2;
-                if (level3 == "") {
-                  level3 = "placeholder";
-                }
-              }
-            } else if (paragraph.Style.NameLocal.indexOf("标题 1") != -1) {
-              if (level1 == "") {
-                level1 = paragraph.Range.Text;
-                this.level1 = level1;
-                this.getHeadingDone = true;
-              }
+        // while (!this.getHeadingDone) {
+        while (test !== 0) {
+          if (para_last.Style.NameLocal.indexOf("标题") !== -1) {
+            if (para_last.Style.NameLocal.indexOf("标题 3") !== -1) {
+              // alert("level3" + level3);
+              level3 = para_last.Range.Text;
+              if (level3 !== "") this.level3.push(level3 + ' ');
+            } else if (para_last.Style.NameLocal.indexOf("标题 2") !== -1) {
+              level2 = para_last.Range.Text;
+              if (level2 !== "") this.level2.push(level2 + ' ');
+            } else if (para_last.Style.NameLocal.indexOf("标题 1") !== -1) {
+              level1 = para_last.Range.Text;
+              if (level1 !== "") this.level1.push(level1 + ' ');
             }
           }
-          paragraph = paragraph.Previous();
-          // always--"selectionchange"
+          para_last = para_last.Previous();
+          test--;
         }
       }
-      // alert("走出了循环")
     },
   },
   mounted() {
@@ -144,6 +152,7 @@ export default {
   cursor: pointer;
   color: #005c30;
 }
+
 .el-icon-arrow-down {
   font-size: 12px;
 }
