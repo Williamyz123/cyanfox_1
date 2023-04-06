@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import taskPane from './js/taskpane.js'
 export default {
   name: "DocItem",
   props: ['title','description','time','url'],
@@ -18,7 +19,7 @@ export default {
     openURL() {
       // 实验证明只要点到卡片就可以出发这个方法
       alert(this.url);
-
+      taskPane.onbuttonclick('openWeb', this.url)
 
     }
   },
