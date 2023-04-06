@@ -18,6 +18,7 @@
                 size="mini"
                 type="primary"
                 icon="el-icon-search"
+                @click="search"
             ></el-button>
           </template>
         </el-input>
@@ -25,15 +26,15 @@
 
       <!--searchByKeyword(NormalPage)就是手动输入关键字-->
       <!--searchByKeyword(StupidPage)应该就是软件自己识别关键字然后进行搜索-->
-      <div class="process-col">
-        <el-button
-            size="mini"
-            type="primary"
-            class="process-select"
-            plain
-        >智能检索
-        </el-button>
-      </div>
+      <!--<div class="process-col">-->
+      <!--  <el-button-->
+      <!--      size="mini"-->
+      <!--      type="primary"-->
+      <!--      class="process-select"-->
+      <!--      plain-->
+      <!--  >智能检索-->
+      <!--  </el-button>-->
+      <!--</div>-->
     </div>
   </div>
 </template>
@@ -41,11 +42,23 @@
 <script>
 export default {
   name: "BasicSearch",
-  props:['keywords']
+  props:['keywords'],
+  methods: {
+    search() {
+      // 实验证明从组件里面可以拿到keywords
+      // alert(this.keywords);
+      alert(555)
+      // this.$emit('search',this.keywords);
+    }
+  }
 }
 </script>
 
 <style scoped>
+
+.input-col {
+  width: calc(100vh);
+}
 .process-select {
   color: white;
   padding: 7px 7px;
@@ -53,6 +66,7 @@ export default {
 }
 .keyword-input {
   padding-right: 10px;
+  /*width: calc(100%);*/
 }
 .header-row {
   padding-top: 8px;

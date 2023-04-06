@@ -1,43 +1,51 @@
 <template>
-  <div class="defense">
-    <h1>这是标题</h1>
+  <div class="defense" @click="openURL" >
+    <h1>{{title}}</h1>
     <div class="content">
-      这些是网页的信息的简介
+      {{ description }}
     </div>
     <div class="item-footer">
-      <span>时间</span>
-      <span>作者</span>
-      <span>单位</span>
+      <span>{{time}}</span>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "DocItem"
+  name: "DocItem",
+  props: ['title','description','time','url'],
+  methods: {
+    openURL() {
+      // 实验证明只要点到卡片就可以出发这个方法
+      alert(this.url);
+
+
+    }
+  },
 }
 </script>
 
 <style scoped>
 .defense {
+  display: flex;
+  flex-direction: column;
   margin-top: 10px;
-  border-bottom: #005c30 3px solid;
+  padding: 5px;
+  background-color: #ececec;
+  border-radius: 5px;
+  /*background-color: #005c30;*/
+  /*border-bottom: #005c30 3px solid;*/
 }
 
 h1 {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .item-footer {
-  display: flex;
-  /*border: red 1px solid;*/
-  justify-content: flex-end;
-  align-items: center;
+  align-self: flex-end;
 }
 
 span {
-  /*border: blue 1px solid;*/
-  margin-left: 5px;
-  margin-right: 5px;;
+
 }
 </style>

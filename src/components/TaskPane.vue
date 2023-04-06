@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="container">
     <!--<button @click='testWpsApi'>测试</button>-->
-    <el-select v-model="value" placeholder="请选择">
+    <el-select v-model="value" placeholder="请选择" size="small">
       <el-option
           v-for="item in options"
           :key="item.value"
@@ -9,9 +9,8 @@
           :value="item.value">
       </el-option>
     </el-select>
-    <basic-search :keywords="keywords"></basic-search>
-    <DocItem></DocItem>
-    <DocItem></DocItem>
+    <basic-search :keywords="keywords" v-on:search="search"></basic-search>
+    <DocItem title="标题1" description="简介1" time="时间1" url="https://www.bilibili.com/" @click="openURL"></DocItem>
 
   </div>
 </template>
@@ -23,6 +22,12 @@ import basicSearch from "@/components/BasicSearch.vue";
 import BasicSearch from "@/components/BasicSearch.vue";
 import DocItem from "@/components/DocItem.vue";
 import {forEach} from "core-js/stable/dom-collections";
+
+const request = axios.create ({
+  // baseURL: HOST,
+  timeout: 5000,
+  withCredentials: true
+})
 
 export default {
   name: 'TaskPane',
@@ -41,19 +46,15 @@ export default {
       level2: [],
       level3: [],
       keywords: '',
+      search_data:{},
 
     }
   },
   methods: {
-    // onbuttonclick(id){
-    //     return taskPane.onbuttonclick(id)
-    // },
-    // onDocNameClick(){
-    //     this.docName = taskPane.onbuttonclick('getDocName')
-    // },
-    // onOpenWeb(){
-    //     taskPane.onbuttonclick('openWeb', this.DemoSpan)
-    // }
+    openURL() {
+      alert(222);
+    },
+
     // 这个应该是隔0.5s就监听鼠标
     testWpsApi() {
       console.log(111)
@@ -71,6 +72,54 @@ export default {
         this.keywords += value;
       })
       // this.keywords = `${this.level1} ${this.level2} ${this.level3}`
+    },
+    search(keywords) {
+      // alert(keywords);
+      // this.$axios({
+      //   method: 'get',
+      //   url: 'http://localhost:8080/myzproduct/getAllByTitle',
+      //   params: {
+      //     title: "iphone",
+      //   }
+      // }).then(res=>{
+      //   alert("suceess");
+      //   alert(res.data);
+      //   console.log(res.data);
+      // },err=>{
+      //   alert("错误是" + err);
+      //   console.log(err);
+      // })
+
+      // wps.httpRequest({
+      //   url: 'http://localhost:8080/myzproduct/getTitle',
+      //   method: 'GET',
+      //   headers: {
+      //     'Content-Type': 'application/json'
+      //   },
+      //   data: {
+      //     title:keywords,
+      //   },
+      //   onSuccess: function (res) {
+      //     alert("success");
+      //     console.log(res.data.title);
+      //   },
+      //   onError: function (err) {
+      //     alert("error");
+      //     console.log(err);
+      //   }
+      // });
+
+      // request({
+      //   method:"get",
+      //   url: 'http://localhost:8080/myzproduct/getTitle?title=iphone'
+      // }).then(res=>{
+      //   alert("suceess");
+      //   alert(res.data);
+      //   console.log(res.data);
+      // },err=>{
+      //   alert("错误是" + err);
+      //   console.log(err);
+      // })
     },
     activeWorker() {
       this.level1 = [];
@@ -107,15 +156,11 @@ export default {
         let level1 = '';
         let level2 = '';
         let level3 = '';
-
-        this.getHeadingDone = false;
-        let para_first = res.Paragraphs.First;
         let para_last = res.Paragraphs.Last;
-
-        let test = res.Range.Paragraphs.Count;
+        let count = res.Range.Paragraphs.Count;
         // var always = 10
         // while (!this.getHeadingDone) {
-        while (test !== 0) {
+        while (count !== 0) {
           if (para_last.Style.NameLocal.indexOf("标题") !== -1) {
             if (para_last.Style.NameLocal.indexOf("标题 3") !== -1) {
               // alert("level3" + level3);
@@ -130,7 +175,7 @@ export default {
             }
           }
           para_last = para_last.Previous();
-          test--;
+          count--;
         }
       }
     },
@@ -148,6 +193,9 @@ export default {
   color: #005c30;
 }
 
+.container {
+  /*background-color: #ececec;*/
+}
 .el-icon-arrow-down {
   font-size: 12px;
 }
