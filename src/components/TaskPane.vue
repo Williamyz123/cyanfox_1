@@ -11,7 +11,7 @@
     </el-select>
     <basic-search :keywords="keywords" v-on:search="search"></basic-search>
     <DocItem title="标题1" description="简介1" time="时间1" url="https://www.bilibili.com/" @click="openURL"></DocItem>
-
+    <img :src="imageData + Base64Data" />
   </div>
 </template>
 
@@ -47,10 +47,24 @@ export default {
       level3: [],
       keywords: '',
       search_data:{},
-
+      imageData: "data:image/png;base64,",// 你的Base64图像数据
+      Base64Data: "",
     }
   },
   methods: {
+    async sendPostRequest() {
+      let url = "/sdapi/v1/txt2img";
+      let payload = {
+        "prompt": "puppy dog",
+        "steps": 5
+      };
+
+      const response = await axios.post(url, payload);
+      // console.log(response.data.images['0']);
+      console.log(this.imageData)
+      this.Base64Data = response.data.images['0'];
+
+    },
     openURL() {
       alert(222);
     },
@@ -73,53 +87,17 @@ export default {
       })
       // this.keywords = `${this.level1} ${this.level2} ${this.level3}`
     },
-    search(keywords) {
-      // alert(keywords);
-      // this.$axios({
-      //   method: 'get',
-      //   url: 'http://localhost:8080/myzproduct/getAllByTitle',
-      //   params: {
-      //     title: "iphone",
-      //   }
-      // }).then(res=>{
-      //   alert("suceess");
-      //   alert(res.data);
-      //   console.log(res.data);
-      // },err=>{
-      //   alert("错误是" + err);
-      //   console.log(err);
-      // })
+    async search(keywords) {
+      let url = "/sdapi/v1/txt2img";
+      let payload = {
+        "prompt": "puppy dog",
+        "steps": 5
+      };
 
-      // wps.httpRequest({
-      //   url: 'http://localhost:8080/myzproduct/getTitle',
-      //   method: 'GET',
-      //   headers: {
-      //     'Content-Type': 'application/json'
-      //   },
-      //   data: {
-      //     title:keywords,
-      //   },
-      //   onSuccess: function (res) {
-      //     alert("success");
-      //     console.log(res.data.title);
-      //   },
-      //   onError: function (err) {
-      //     alert("error");
-      //     console.log(err);
-      //   }
-      // });
-
-      // request({
-      //   method:"get",
-      //   url: 'http://localhost:8080/myzproduct/getTitle?title=iphone'
-      // }).then(res=>{
-      //   alert("suceess");
-      //   alert(res.data);
-      //   console.log(res.data);
-      // },err=>{
-      //   alert("错误是" + err);
-      //   console.log(err);
-      // })
+      const response = await axios.post(url, payload);
+      // console.log(response.data.images['0']);
+      console.log(this.imageData)
+      this.Base64Data = response.data.images['0'];
     },
     activeWorker() {
       this.level1 = [];
@@ -199,5 +177,7 @@ export default {
 .el-icon-arrow-down {
   font-size: 12px;
 }
-
+img {
+  width: 100%;
+}
 </style>

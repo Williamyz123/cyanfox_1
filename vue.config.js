@@ -3,6 +3,11 @@ module.exports = {
     "publicPath": "",
     "productionSourceMap": false,
     devServer: {
-        proxy: "http://localhost:8081" // 这里存放的是真正的服务器
-    }
+        proxy: {
+            "/sdapi": {
+                target: "http://127.0.0.1:7860", // 接口的域名
+                changeOrigin: true
+            }
+        },
+    },
 }

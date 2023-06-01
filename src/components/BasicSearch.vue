@@ -47,8 +47,8 @@ export default {
     search() {
       // 实验证明从组件里面可以拿到keywords
       // alert(this.keywords);
-      alert(555)
-      // this.$emit('search',this.keywords);
+      // alert(555)
+      this.$emit('search',this.keywords);
     }
   }
 }
