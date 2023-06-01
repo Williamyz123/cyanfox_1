@@ -37,12 +37,6 @@
           <el-button @click="search">生成图片</el-button>
         </div>
       </div>
-
-      <!--<basic-search :keywords="keywords" v-on:search="search"></basic-search>-->
-
-
-
-
     </div>
 
     <!--<DocItem title="标题1" description="简介1" time="时间1" url="https://www.bilibili.com/" @click="openURL"></DocItem>-->
@@ -174,58 +168,6 @@ export default {
       });
     },
     async search(keywords) {
-      // let prompt = "";
-      // let resdata = "";
-      // let url_sd = "";
-      // let payload = {};
-      //
-      //
-      // let content = wps.WpsApplication().Selection.Text;
-      // content = content.replaceAll(' ', '\n');
-      // // const url = 'http://api.fanyi.baidu.com/api/trans/vip/translate'
-      // let appid = '20230601001697728';
-      // let key = 'upqadnnem_WMsnZ4Zhul';
-      // let salt = (new Date).getTime();
-      // // let query = '苹果';
-      // let query = content;
-      // // 多个query可以用\n连接  如 query='apple\norange\nbanana\npear'
-      // let from = 'zh';
-      // let to = 'en';
-      // let str1 = appid + query + salt + key;
-      // let sign = md5(str1);
-      //
-      // $.ajax({
-      //   url: '/trans/vip/translate',
-      //   type: 'get',
-      //   dataType: 'jsonp',
-      //   data: {
-      //     q: query,
-      //     appid: appid,
-      //     salt: salt,
-      //     from: from,
-      //     to: to,
-      //     sign: sign
-      //   },
-      //   success: function (data) {
-      //     for (let result of data.trans_result) {
-      //       resdata = resdata + result.dst + ' '
-      //     }
-      //     prompt = resdata
-      //     // alert(prompt)
-      //     url_sd = "/sdapi/v1/txt2img";
-      //     payload = {
-      //       "prompt": prompt,
-      //       "steps": 50
-      //     };
-      //
-      //     // alert(data.trans_result['0'].dst);
-      //     // resdata = data
-      //     // prompt = data.trans_result['0'].dst
-      //   }
-      // });
-      //
-
-      alert(this.translation)
       let url_sd = "/sdapi/v1/txt2img";
       let payload = {
         "prompt": this.translation,
