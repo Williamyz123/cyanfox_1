@@ -1,17 +1,55 @@
 <template>
   <div class="container">
     <!--<button @click='testWpsApi'>测试</button>-->
-    <el-select v-model="value" placeholder="请选择" size="small">
-      <el-option
-          v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
-      </el-option>
-    </el-select>
-    <basic-search :keywords="keywords" v-on:search="search"></basic-search>
-    <DocItem title="标题1" description="简介1" time="时间1" url="https://www.bilibili.com/" @click="openURL"></DocItem>
-    <img :src="imageData + Base64Data" />
+    <div class="panel">
+      <div class="panel-item">
+        剧本种类
+        <el-select v-model="value" placeholder="请选择剧本类别" size="small">
+          <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+          </el-option>
+        </el-select>
+      </div>
+      <div class="panel-item">
+        框选文本
+        <el-input
+            type="textarea"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            placeholder="请框选需要生成配图的文本"
+            v-model="selected">
+        </el-input>
+      </div>
+      <div class="panel-item">
+        翻译生成pronpt
+        <el-input
+            type="textarea"
+            :autosize="{ minRows: 2, maxRows: 4}"
+            placeholder="点击翻译生成对应promt"
+            v-model="translation">
+        </el-input>
+      </div>
+      <div class="panel-item">
+        <div class="buttons">
+          <el-button @click="translate">翻译</el-button>
+          <el-button @click="search">生成图片</el-button>
+        </div>
+      </div>
+
+      <!--<basic-search :keywords="keywords" v-on:search="search"></basic-search>-->
+
+
+
+
+    </div>
+
+    <!--<DocItem title="标题1" description="简介1" time="时间1" url="https://www.bilibili.com/" @click="openURL"></DocItem>-->
+    <div class="image-container">
+      <img :src="imageData + Base64Data"/>
+    </div>
+
   </div>
 </template>
 
@@ -23,10 +61,11 @@ import BasicSearch from "@/components/BasicSearch.vue";
 import DocItem from "@/components/DocItem.vue";
 import md5 from 'md5';
 import $ from 'jquery';
+
 window.$ = $;
 
 
-const request = axios.create ({
+const request = axios.create({
   // baseURL: HOST,
   timeout: 5000,
   withCredentials: true
@@ -39,19 +78,23 @@ export default {
     return {
       options: [{
         value: '选项1',
-        label: '计算机'
+        label: '悬疑'
       }, {
         value: '选项2',
-        label: '思政'
+        label: '言情'
       }],
       value: '',
       level1: [],
       level2: [],
       level3: [],
       keywords: '',
-      search_data:{},
+      search_data: {},
       imageData: "data:image/png;base64,",// 你的Base64图像数据
       Base64Data: "",
+      resData: "",
+      translation: "",
+      prompt: "",
+      selected:"",
     }
   },
   methods: {
@@ -90,37 +133,25 @@ export default {
       })
       // this.keywords = `${this.level1} ${this.level2} ${this.level3}`
     },
-    async search(keywords) {
-      //  prompt = wps.WpsApplication().Selection.Text
-      // alert(prompt)
+    async translate() {
+      let resdata = "";
+      let words = "";
 
-      let prompt = "";
-
-      // alert(keywords)
-      keywords = keywords.replaceAll(' ', '\n');
-      // alert(keywords)
-
-      const url = 'http://api.fanyi.baidu.com/api/trans/vip/translate'
+      let content = wps.WpsApplication().Selection.Text;
+      content = content.replaceAll(' ', '\n');
+      // const url = 'http://api.fanyi.baidu.com/api/trans/vip/translate'
       let appid = '20230601001697728';
       let key = 'upqadnnem_WMsnZ4Zhul';
       let salt = (new Date).getTime();
       // let query = '苹果';
-      let query = keywords;
-
+      let query = content;
       // 多个query可以用\n连接  如 query='apple\norange\nbanana\npear'
       let from = 'zh';
       let to = 'en';
-      let str1 = appid + query + salt +key;
+      let str1 = appid + query + salt + key;
       let sign = md5(str1);
-      const params = {
-        q: query,
-        appid: appid,
-        salt: salt,
-        from: from,
-        to: to,
-        sign: sign
-      };
 
+      let that = this
       $.ajax({
         url: '/trans/vip/translate',
         type: 'get',
@@ -134,15 +165,70 @@ export default {
           sign: sign
         },
         success: function (data) {
-          // alert(data.trans_result['0'].dst);
-          prompt = data.trans_result['0'].dst
+          for (let result of data.trans_result) {
+            resdata = resdata + result.dst + ' '
+          }
+          // alert(resdata)
+          that.translation = resdata
         }
       });
+    },
+    async search(keywords) {
+      // let prompt = "";
+      // let resdata = "";
+      // let url_sd = "";
+      // let payload = {};
+      //
+      //
+      // let content = wps.WpsApplication().Selection.Text;
+      // content = content.replaceAll(' ', '\n');
+      // // const url = 'http://api.fanyi.baidu.com/api/trans/vip/translate'
+      // let appid = '20230601001697728';
+      // let key = 'upqadnnem_WMsnZ4Zhul';
+      // let salt = (new Date).getTime();
+      // // let query = '苹果';
+      // let query = content;
+      // // 多个query可以用\n连接  如 query='apple\norange\nbanana\npear'
+      // let from = 'zh';
+      // let to = 'en';
+      // let str1 = appid + query + salt + key;
+      // let sign = md5(str1);
+      //
+      // $.ajax({
+      //   url: '/trans/vip/translate',
+      //   type: 'get',
+      //   dataType: 'jsonp',
+      //   data: {
+      //     q: query,
+      //     appid: appid,
+      //     salt: salt,
+      //     from: from,
+      //     to: to,
+      //     sign: sign
+      //   },
+      //   success: function (data) {
+      //     for (let result of data.trans_result) {
+      //       resdata = resdata + result.dst + ' '
+      //     }
+      //     prompt = resdata
+      //     // alert(prompt)
+      //     url_sd = "/sdapi/v1/txt2img";
+      //     payload = {
+      //       "prompt": prompt,
+      //       "steps": 50
+      //     };
+      //
+      //     // alert(data.trans_result['0'].dst);
+      //     // resdata = data
+      //     // prompt = data.trans_result['0'].dst
+      //   }
+      // });
+      //
 
-      // alert(prompt)
+      alert(this.translation)
       let url_sd = "/sdapi/v1/txt2img";
       let payload = {
-        "prompt": prompt,
+        "prompt": this.translation,
         "steps": 50
       };
 
@@ -152,7 +238,16 @@ export default {
       this.Base64Data = response.data.images['0'];
 
     },
+    async sendToSD(url_sd, payload) {
+      alert(111)
+      const response = await axios.post(url_sd, payload);
+      // console.log(response.data.images['0']);
+      console.log(this.imageData)
+      this.Base64Data = response.data.images['0'];
+    },
+
     activeWorker() {
+      this.selected = wps.WpsApplication().Selection.Text;
       this.level1 = [];
       this.level2 = [];
       this.level3 = [];
@@ -227,10 +322,40 @@ export default {
 .container {
   /*background-color: #ececec;*/
 }
+
 .el-icon-arrow-down {
   font-size: 12px;
 }
+
 img {
   width: 100%;
 }
+
+.el-button {
+  color: white;
+  border: solid 1px;
+  background-color: #005c30;
+  width: 45%;
+}
+.panel {
+  /*border: 1px red solid;*/
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 50%;
+}
+.panel-item {
+  margin-top: 10px;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.image-container {
+  margin-top: 10px;
+}
+
 </style>
