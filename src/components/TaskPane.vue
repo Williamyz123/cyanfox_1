@@ -21,7 +21,10 @@ import taskPane from './js/taskpane.js'
 import basicSearch from "@/components/BasicSearch.vue";
 import BasicSearch from "@/components/BasicSearch.vue";
 import DocItem from "@/components/DocItem.vue";
-import {forEach} from "core-js/stable/dom-collections";
+import md5 from 'md5';
+import $ from 'jquery';
+window.$ = $;
+
 
 const request = axios.create ({
   // baseURL: HOST,
@@ -52,19 +55,19 @@ export default {
     }
   },
   methods: {
-    async sendPostRequest() {
-      let url = "/sdapi/v1/txt2img";
-      let payload = {
-        "prompt": "puppy dog",
-        "steps": 5
-      };
-
-      const response = await axios.post(url, payload);
-      // console.log(response.data.images['0']);
-      console.log(this.imageData)
-      this.Base64Data = response.data.images['0'];
-
-    },
+    // async sendPostRequest() {
+    //   let url = "/sdapi/v1/txt2img";
+    //   let payload = {
+    //     "prompt": "puppy dog",
+    //     "steps": 5
+    //   };
+    //
+    //   const response = await axios.post(url, payload);
+    //   // console.log(response.data.images['0']);
+    //   console.log(this.imageData)
+    //   this.Base64Data = response.data.images['0'];
+    //
+    // },
     openURL() {
       alert(222);
     },
@@ -88,16 +91,55 @@ export default {
       // this.keywords = `${this.level1} ${this.level2} ${this.level3}`
     },
     async search(keywords) {
-      let url = "/sdapi/v1/txt2img";
-      let payload = {
-        "prompt": "puppy dog",
-        "steps": 5
+      // let url = "/sdapi/v1/txt2img";
+      // let payload = {
+      //   "prompt": "puppy dog",
+      //   "steps": 5
+      // };
+      //
+      // const response = await axios.post(url, payload);
+      // // console.log(response.data.images['0']);
+      // console.log(this.imageData)
+      // this.Base64Data = response.data.images['0'];
+
+      this.keywords = "5465";
+
+      const url = 'http://api.fanyi.baidu.com/api/trans/vip/translate'
+      let appid = '20230601001697728';
+      let key = 'upqadnnem_WMsnZ4Zhul';
+      let salt = (new Date).getTime();
+      let query = '苹果';
+      // 多个query可以用\n连接  如 query='apple\norange\nbanana\npear'
+      let from = 'zh';
+      let to = 'en';
+      let str1 = appid + query + salt +key;
+      let sign = md5(str1);
+      const params = {
+        q: query,
+        appid: appid,
+        salt: salt,
+        from: from,
+        to: to,
+        sign: sign
       };
 
-      const response = await axios.post(url, payload);
-      // console.log(response.data.images['0']);
-      console.log(this.imageData)
-      this.Base64Data = response.data.images['0'];
+      $.ajax({
+        url: '/trans/vip/translate',
+        type: 'get',
+        dataType: 'jsonp',
+        data: {
+          q: query,
+          appid: appid,
+          salt: salt,
+          from: from,
+          to: to,
+          sign: sign
+        },
+        success: function (data) {
+          alert(data.trans_result['0'].dst);
+        }
+      });
+
     },
     activeWorker() {
       this.level1 = [];
@@ -136,7 +178,7 @@ export default {
         let level3 = '';
         let para_last = res.Paragraphs.Last;
         let count = res.Range.Paragraphs.Count;
-        // var always = 10
+        // let always = 10
         // while (!this.getHeadingDone) {
         while (count !== 0) {
           if (para_last.Style.NameLocal.indexOf("标题") !== -1) {
