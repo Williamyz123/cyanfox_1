@@ -91,24 +91,22 @@ export default {
       // this.keywords = `${this.level1} ${this.level2} ${this.level3}`
     },
     async search(keywords) {
-      // let url = "/sdapi/v1/txt2img";
-      // let payload = {
-      //   "prompt": "puppy dog",
-      //   "steps": 5
-      // };
-      //
-      // const response = await axios.post(url, payload);
-      // // console.log(response.data.images['0']);
-      // console.log(this.imageData)
-      // this.Base64Data = response.data.images['0'];
+      //  prompt = wps.WpsApplication().Selection.Text
+      // alert(prompt)
 
-      this.keywords = "5465";
+      let prompt = "";
+
+      // alert(keywords)
+      keywords = keywords.replaceAll(' ', '\n');
+      // alert(keywords)
 
       const url = 'http://api.fanyi.baidu.com/api/trans/vip/translate'
       let appid = '20230601001697728';
       let key = 'upqadnnem_WMsnZ4Zhul';
       let salt = (new Date).getTime();
-      let query = '苹果';
+      // let query = '苹果';
+      let query = keywords;
+
       // 多个query可以用\n连接  如 query='apple\norange\nbanana\npear'
       let from = 'zh';
       let to = 'en';
@@ -136,9 +134,22 @@ export default {
           sign: sign
         },
         success: function (data) {
-          alert(data.trans_result['0'].dst);
+          // alert(data.trans_result['0'].dst);
+          prompt = data.trans_result['0'].dst
         }
       });
+
+      // alert(prompt)
+      let url_sd = "/sdapi/v1/txt2img";
+      let payload = {
+        "prompt": prompt,
+        "steps": 50
+      };
+
+      const response = await axios.post(url_sd, payload);
+      // console.log(response.data.images['0']);
+      console.log(this.imageData)
+      this.Base64Data = response.data.images['0'];
 
     },
     activeWorker() {
