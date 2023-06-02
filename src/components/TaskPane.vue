@@ -180,14 +180,6 @@ export default {
       this.Base64Data = response.data.images['0'];
 
     },
-    async sendToSD(url_sd, payload) {
-      alert(111)
-      const response = await axios.post(url_sd, payload);
-      // console.log(response.data.images['0']);
-      console.log(this.imageData)
-      this.Base64Data = response.data.images['0'];
-    },
-
     activeWorker() {
       this.selected = wps.WpsApplication().Selection.Text;
       this.level1 = [];
