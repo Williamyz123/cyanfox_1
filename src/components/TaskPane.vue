@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div v-show="!isShowLogin">
-      <button @click='testWpsApi'>测试</button>
+      <!--<button @click='testWpsApi'>测试</button>-->
       <div class="panel">
         <div class="panel-item">
           剧本种类
@@ -160,6 +160,7 @@ export default {
         "prompt": this.translation,
         "steps": 50,
         "batch_size": 3,
+        "sampler_index": "DPM++ 2M Karras",
       };
 
       const response = await axios.post(url_sd, payload);
