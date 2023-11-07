@@ -41,7 +41,9 @@
 
     <!--<DocItem title="标题1" description="简介1" time="时间1" url="https://www.bilibili.com/" @click="openURL"></DocItem>-->
     <div class="image-container">
-      <img :src="imageData + Base64Data"/>
+      <img :src="imageData + Base64Data1"/>
+      <img :src="imageData + Base64Data2"/>
+      <img :src="imageData + Base64Data3"/>
     </div>
 
   </div>
@@ -84,7 +86,9 @@ export default {
       keywords: '',
       search_data: {},
       imageData: "data:image/png;base64,",// 你的Base64图像数据
-      Base64Data: "",
+      Base64Data1: "",
+      Base64Data2: "",
+      Base64Data3: "",
       resData: "",
       translation: "",
       prompt: "",
@@ -171,13 +175,16 @@ export default {
       let url_sd = "/sdapi/v1/txt2img";
       let payload = {
         "prompt": this.translation,
-        "steps": 50
+        "steps": 50,
+        "batch_size": 3,
       };
 
       const response = await axios.post(url_sd, payload);
       // console.log(response.data.images['0']);
       console.log(this.imageData)
-      this.Base64Data = response.data.images['0'];
+      this.Base64Data1 = response.data.images['0'];
+      this.Base64Data2 = response.data.images['1'];
+      this.Base64Data3 = response.data.images['2'];
 
     },
     activeWorker() {
