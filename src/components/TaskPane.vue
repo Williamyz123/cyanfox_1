@@ -1,50 +1,56 @@
 <template>
   <div class="container">
-    <!--<button @click='testWpsApi'>测试</button>-->
-    <div class="panel">
-      <div class="panel-item">
-        剧本种类
-        <el-select v-model="value" placeholder="请选择剧本类别" size="small">
-          <el-option
-              v-for="item in options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-          </el-option>
-        </el-select>
-      </div>
-      <div class="panel-item">
-        框选文本
-        <el-input
-            type="textarea"
-            :autosize="{ minRows: 2, maxRows: 4}"
-            placeholder="请框选需要生成配图的文本"
-            v-model="selected">
-        </el-input>
-      </div>
-      <div class="panel-item">
-        翻译生成pronpt
-        <el-input
-            type="textarea"
-            :autosize="{ minRows: 2, maxRows: 4}"
-            placeholder="点击翻译生成对应promt"
-            v-model="translation">
-        </el-input>
-      </div>
-      <div class="panel-item">
-        <div class="buttons">
-          <el-button @click="translate">翻译</el-button>
-          <el-button @click="search">生成图片</el-button>
+    <div v-show="!isShowLogin">
+      <button @click='testWpsApi'>测试</button>
+      <div class="panel">
+        <div class="panel-item">
+          剧本种类
+          <el-select v-model="value" placeholder="请选择剧本类别" size="small">
+            <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+            </el-option>
+          </el-select>
+        </div>
+        <div class="panel-item">
+          框选文本
+          <el-input
+              type="textarea"
+              :autosize="{ minRows: 2, maxRows: 4}"
+              placeholder="请框选需要生成配图的文本"
+              v-model="selected">
+          </el-input>
+        </div>
+        <div class="panel-item">
+          翻译生成pronpt
+          <el-input
+              type="textarea"
+              :autosize="{ minRows: 2, maxRows: 4}"
+              placeholder="点击翻译生成对应promt"
+              v-model="translation">
+          </el-input>
+        </div>
+        <div class="panel-item">
+          <div class="buttons">
+            <el-button @click="translate">翻译</el-button>
+            <el-button @click="search">生成图片</el-button>
+          </div>
+
         </div>
       </div>
+
+      <!--<DocItem title="标题1" description="简介1" time="时间1" url="https://www.bilibili.com/" @click="openURL"></DocItem>-->
+      <div class="image-container" v-show="isShowImage">
+        <img :src="imageData + Base64Data1"/>
+        <img :src="imageData + Base64Data2"/>
+        <img :src="imageData + Base64Data3"/>
+      </div>
+
     </div>
 
-    <!--<DocItem title="标题1" description="简介1" time="时间1" url="https://www.bilibili.com/" @click="openURL"></DocItem>-->
-    <div class="image-container">
-      <img :src="imageData + Base64Data1"/>
-      <img :src="imageData + Base64Data2"/>
-      <img :src="imageData + Base64Data3"/>
-    </div>
+    <Login v-show="isShowLogin" ref="login"></Login>
 
   </div>
 </template>
@@ -55,6 +61,7 @@ import taskPane from './js/taskpane.js'
 import basicSearch from "@/components/BasicSearch.vue";
 import BasicSearch from "@/components/BasicSearch.vue";
 import DocItem from "@/components/DocItem.vue";
+import Login from "@/components/Login.vue";
 import md5 from 'md5';
 import $ from 'jquery';
 
@@ -69,7 +76,7 @@ const request = axios.create({
 
 export default {
   name: 'TaskPane',
-  components: {DocItem, BasicSearch},
+  components: {DocItem, BasicSearch, Login},
   data() {
     return {
       options: [{
@@ -92,44 +99,20 @@ export default {
       resData: "",
       translation: "",
       prompt: "",
-      selected:"",
+      selected: "",
+      isShowLogin: false,
+      isShowImage:false,
     }
   },
   methods: {
-    // async sendPostRequest() {
-    //   let url = "/sdapi/v1/txt2img";
-    //   let payload = {
-    //     "prompt": "puppy dog",
-    //     "steps": 5
-    //   };
-    //
-    //   const response = await axios.post(url, payload);
-    //   // console.log(response.data.images['0']);
-    //   console.log(this.imageData)
-    //   this.Base64Data = response.data.images['0'];
-    //
-    // },
+
     openURL() {
       alert(222);
     },
 
     // 这个应该是隔0.5s就监听鼠标
     testWpsApi() {
-      console.log(111)
-      // this.level1 = ""
-      // this.level2 = ""
-      // this.level3 = ""
-      this.selectionChange()
-      this.level1.forEach(value => {
-        this.keywords += value;
-      })
-      this.level2.forEach(value => {
-        this.keywords += value;
-      })
-      this.level3.forEach(value => {
-        this.keywords += value;
-      })
-      // this.keywords = `${this.level1} ${this.level2} ${this.level3}`
+      this.isShowLogin = true;
     },
     async translate() {
       let resdata = "";
@@ -185,6 +168,7 @@ export default {
       this.Base64Data1 = response.data.images['0'];
       this.Base64Data2 = response.data.images['1'];
       this.Base64Data3 = response.data.images['2'];
+      this.isShowImage = true;
 
     },
     activeWorker() {
@@ -246,9 +230,14 @@ export default {
         }
       }
     },
+
+    login(data) {
+      this.isShowLogin = false;
+    }
   },
   mounted() {
     this.activeWorker()
+    this.$refs.login.$on('login',this.login)
   }
 }
 </script>
@@ -278,6 +267,7 @@ img {
   background-color: #005c30;
   width: 45%;
 }
+
 .panel {
   /*border: 1px red solid;*/
   display: flex;
@@ -285,6 +275,7 @@ img {
   justify-content: space-between;
   height: 50%;
 }
+
 .panel-item {
   margin-top: 10px;
 }
