@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div v-show="!isShowLogin">
-      <button @click='testWpsApi'>测试</button>
+      <!--<button @click='testWpsApi'>测试</button>-->
       <div class="panel">
         <div class="panel-item">
           模型选择
@@ -88,6 +88,12 @@ export default {
       }, {
         value: 'sdxlUnstableDiffusers_v9DIVINITYMACHINE.safetensors[05c9e2274a]',
         label: 'sdxlUnstableDiffusers'
+      }, {
+        value: 'technidrawing_v10.safetensors [582acba7a0]',
+        label: 'technidrawing'
+      }, {
+        value: 'flat2DAnimerge_v40.safetensors [f5e9411b4d]',
+        label: 'flat2DAnimerge'
       }],
       value: 'anything-v5-PrtRE.safetensors [7f96a1a9ca]',
       level1: [],
