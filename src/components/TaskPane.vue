@@ -1,10 +1,10 @@
 <template>
   <div class="container">
     <div v-show="!isShowLogin">
-      <!--<button @click='testWpsApi'>测试</button>-->
+      <button @click='testWpsApi'>测试</button>
       <div class="panel">
         <div class="panel-item">
-          剧本种类
+          模型选择
           <el-select v-model="value" placeholder="请选择剧本类别" size="small">
             <el-option
                 v-for="item in options"
@@ -80,13 +80,16 @@ export default {
   data() {
     return {
       options: [{
-        value: '1',
-        label: '悬疑'
+        value: 'anything-v5-PrtRE.safetensors [7f96a1a9ca]',
+        label: 'anything'
       }, {
-        value: '2',
-        label: '言情'
+        value: 'chilloutmix_NiPrunedFp32Fix.safetensors [fc2511737a]',
+        label: 'chilloutmix_NiPrunedFp32Fix'
+      }, {
+        value: 'sdxlUnstableDiffusers_v9DIVINITYMACHINE.safetensors[05c9e2274a]',
+        label: 'sdxlUnstableDiffusers'
       }],
-      value: '',
+      value: 'anything-v5-PrtRE.safetensors [7f96a1a9ca]',
       level1: [],
       level2: [],
       level3: [],
@@ -100,7 +103,7 @@ export default {
       translation: "",
       prompt: "",
       selected: "",
-      isShowLogin: false,
+      isShowLogin: true,
       isShowImage:false,
     }
   },
@@ -112,7 +115,7 @@ export default {
 
     // 这个应该是隔0.5s就监听鼠标
     testWpsApi() {
-      this.isShowLogin = true;
+      alert(this.value)
     },
     async translate() {
       let resdata = "";
@@ -162,7 +165,7 @@ export default {
         "batch_size": 3,
         "sampler_index": "DPM++ 2M Karras",
         "override_settings": {
-          "sd_model_checkpoint": "chilloutmix_NiPrunedFp32Fix.safetensors [fc2511737a]",
+          "sd_model_checkpoint": this.value,
         },
       };
 
