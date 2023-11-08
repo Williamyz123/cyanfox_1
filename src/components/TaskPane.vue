@@ -80,10 +80,10 @@ export default {
   data() {
     return {
       options: [{
-        value: '选项1',
+        value: '1',
         label: '悬疑'
       }, {
-        value: '选项2',
+        value: '2',
         label: '言情'
       }],
       value: '',
@@ -161,6 +161,9 @@ export default {
         "steps": 50,
         "batch_size": 3,
         "sampler_index": "DPM++ 2M Karras",
+        "override_settings": {
+          "sd_model_checkpoint": "chilloutmix_NiPrunedFp32Fix.safetensors [fc2511737a]",
+        },
       };
 
       const response = await axios.post(url_sd, payload);
